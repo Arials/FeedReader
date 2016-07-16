@@ -59,6 +59,7 @@ $(function() {
     describe('Initial Entries', function() {
 
         beforeEach(function(done){
+            // to test async loadFeed function, when done, make the test
             loadFeed(0, function() {
                 done();
             });
@@ -74,6 +75,7 @@ $(function() {
     describe('New Feed Selection', function() {
         var content_old,
             content_new;
+        // Save the element content before making the loadFunction call
         if ($('#feed-content > a').length > 0)
         {
             content_old = $('#feed-content > a').get(0);
@@ -82,16 +84,19 @@ $(function() {
             content_old = 'nothing';
         }
 
+        // to test async loadFeed function, when done, make the test
         beforeEach(function(done){
             loadFeed(0, function() {
                 done();
             });
+            // Save the content after loadFunction
             content_new = $('#feed-content > a').get(0);
             console.log(content_new);
             console.log(content_old);
         });
 
         it("when a new feed is loaded the content actually changes", function(done) {
+            // the content before has to be different from after
             expect(content_new).not.toEqual(content_old);
             done();
         });
