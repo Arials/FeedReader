@@ -65,9 +65,8 @@ $(function() {
             });
         });
 
-        it("should load at least one feed", function(done) {
+        it("should load at least one feed", function() {
             expect($('#feed-content > a').length).toBeGreaterThan(0);
-            done();
         });
 
     });
@@ -75,30 +74,29 @@ $(function() {
     describe('New Feed Selection', function() {
         var content_old,
             content_new;
-        // Save the element content before making the loadFunction call
-        if ($('#feed-content > a').length > 0)
-        {
-            content_old = $('#feed-content > a').get(0);
-        }
-        else{
-            content_old = 'nothing';
-        }
 
         // to test async loadFeed function, when done, make the test
         beforeEach(function(done){
             loadFeed(0, function() {
-                done();
+                // save a copy of the first feeds result of loadFeed
+                content_old = $('#feed-content').clone().get(0);
+                loadFeed(1, function() {
+                    // save a copy of the second feeds result of loadFeed
+                    content_new = $('#feed-content').clone().get(0);
+                    done();
+                });
             });
-            // Save the content after loadFunction
-            content_new = $('#feed-content > a').get(0);
-            console.log(content_new);
-            console.log(content_old);
         });
 
-        it("when a new feed is loaded the content actually changes", function(done) {
-            // the content before has to be different from after
-            expect(content_new).not.toEqual(content_old);
-            done();
+        it("when a new feed is loaded the content actually changes", function() {
+            $(content_new).children().each(function(i){
+                // Compare all links in old feeds with new feeds and has to be diferent
+                var old_href =$($(content_old).children()[i]).attr('href');
+                var new_href = $($(content_new).children()[i]).attr('href');
+                expect(old_href).not.toEqual(new_href);
+            });
+            //expect(content_new).not.toEqual(content_old);
+            //done();
         });
 
     });
